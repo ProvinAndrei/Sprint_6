@@ -11,7 +11,7 @@ class OrderPageLocators:  # Локаторы страницы заказа
     # Локатор поля для ввода адреса
     ADDRESS_FIELD = (By.XPATH, "//input[@placeholder='* Адрес: куда привезти заказ']")
 
-    # Локатор поля для ввода метро
+    # Локатор поля для ввода станции метро
     METRO_FIELD = (By.XPATH, "//input[@placeholder='* Станция метро']")
 
     METRO_STATION_1 = (By.XPATH, '//div[text() = "Сокольники"]')
@@ -30,7 +30,7 @@ class OrderPageLocators:  # Локаторы страницы заказа
     ERROR_PHONE = (By.XPATH, "//div[contains(text(), 'Введите корректный номер')]")
 
     # Локатор поля для выбора даты
-    DATE_SCOOTER = By.XPATH, "//input[@placeholder='* Когда привезти самокат']"
+    DATE_SCOOTER = (By.XPATH, "//input[@placeholder='* Когда привезти самокат']")
     SELECTED_DATE = (By.XPATH, '//div[@aria-label="Choose среда, 26-е ноября 2025 г."]')
     SELECTED_DATE_2 = (By.XPATH, '//div[@aria-label="Choose четверг, 27-е ноября 2025 г."]')
 
@@ -70,3 +70,7 @@ class OrderPageLocators:  # Локаторы страницы заказа
     NAME_FIELD_ALT = (By.XPATH, "//input[@class='Input_Input__1iN_Z' and @placeholder='* Имя']")
     LAST_NAME_FIELD_ALT = (By.XPATH, "//input[@class='Input_Input__1iN_Z' and @placeholder='* Фамилия']")
     ADDRESS_FIELD_ALT = (By.XPATH, "//input[@class='Input_Input__1iN_Z' and @placeholder='* Адрес: куда привезти заказ']")
+
+    # Новые локаторы для куки
+    COOKIE_BANNER = (By.CLASS_NAME, "App_CookieConsent__1yUIN")
+    COOKIE_BUTTON = (By.XPATH, "//button[contains(text(), 'да все привыкли')]")

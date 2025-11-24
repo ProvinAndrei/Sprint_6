@@ -1,7 +1,4 @@
 import allure
-import time
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
 from locators.order_page_locators import OrderPageLocators
 from pages.base_page import BasePage
 
@@ -18,7 +15,6 @@ class OrderPage(BasePage):
         try:
             self.input_text(OrderPageLocators.NAME_FIELD, name)
         except:
-            print("Основной локатор не сработал, пробуем альтернативный")
             self.input_text(OrderPageLocators.NAME_FIELD_ALT, name)
 
     @allure.step("Ввести фамилию заказчика: {last_name}")
@@ -39,30 +35,33 @@ class OrderPage(BasePage):
         """Выбрать станцию метро из выпадающего списка"""
         # Сначала принимаем куки если есть
         try:
-            cookie_banner = self.driver.find_element(By.CLASS_NAME, "App_CookieConsent__1yUIN")
-            cookie_button = cookie_banner.find_element(By.TAG_NAME, "button")
+            cookie_banner = self.wait.until(EC.visibility_of_element_located(OrderPageLocators.COOKIE_BANNER))
+            cookie_button = cookie_banner.find_element(*OrderPageLocators.COOKIE_BUTTON)
             cookie_button.click()
-            time.sleep(1)
+            # Ждем исчезновения баннера через BasePage
+            self.wait_for_invisibility(OrderPageLocators.COOKIE_BANNER, timeout=5)
         except:
             pass  # Если баннера нет - продолжаем
 
         # Кликаем на поле метро
-        metro_field = self.wait.until(EC.element_to_be_clickable(OrderPageLocators.METRO_FIELD))
-        metro_field.click()
-        time.sleep(2)  # Даем время для открытия списка
+        self.click_element(OrderPageLocators.METRO_FIELD)
+        
+        # Ждем появления списка станций через BasePage
+        self.wait_for_presence(OrderPageLocators.METRO_STATION_1, timeout=5)
 
         # Прокручиваем и ищем станцию
         if station_name == "Сокольники":
-            # Прокручиваем к нужной станции
-            station_element = self.wait.until(EC.presence_of_element_located(OrderPageLocators.METRO_STATION_1))
-            self.driver.execute_script("arguments[0].scrollIntoView();", station_element)
-            time.sleep(1)
-            station_element.click()
+            # Ждем присутствия и прокручиваем через BasePage
+            station_element = self.wait_for_presence(OrderPageLocators.METRO_STATION_1)
+            self.execute_script("arguments[0].scrollIntoView();", station_element)
+            # Ждем кликабельности через BasePage
+            self.wait_for_element_clickable(OrderPageLocators.METRO_STATION_1)
+            self.click_element(OrderPageLocators.METRO_STATION_1)
         elif station_name == "Лубянка":
-            station_element = self.wait.until(EC.presence_of_element_located(OrderPageLocators.METRO_STATION_2))
-            self.driver.execute_script("arguments[0].scrollIntoView();", station_element)
-            time.sleep(1)
-            station_element.click()
+            station_element = self.wait_for_presence(OrderPageLocators.METRO_STATION_2)
+            self.execute_script("arguments[0].scrollIntoView();", station_element)
+            self.wait_for_element_clickable(OrderPageLocators.METRO_STATION_2)
+            self.click_element(OrderPageLocators.METRO_STATION_2)
 
     @allure.step("Ввести номер телефона: {phone}")
     def input_phone_number(self, phone):
@@ -88,7 +87,9 @@ class OrderPage(BasePage):
     def pick_rental_period(self, period=None):
         """Выбрать срок аренды самоката"""
         self.click_element(OrderPageLocators.RENTAL_PERIOD)
-        time.sleep(1)
+        
+        # Ждем появления выпадающего списка через BasePage
+        self.wait_for_presence(OrderPageLocators.RENTAL_PERIOD_1_DAY, timeout=5)
 
         if period == "двое суток":
             self.click_element(OrderPageLocators.RENTAL_PERIOD_2_DAYS)

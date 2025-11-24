@@ -44,6 +44,23 @@ class BasePage:
         element = self.find_element(locator)
         self.driver.execute_script("arguments[0].scrollIntoView();", element)
 
+    @allure.step("Выполнить JavaScript скрипт")
+    def execute_script(self, script, *args):
+        """Выполнить JavaScript скрипт"""
+        return self.driver.execute_script(script, *args)
+
+    @allure.step("Дождаться присутствия элемента")
+    def wait_for_presence(self, locator, timeout=10):
+        """Дождаться присутствия элемента в DOM"""
+        wait = WebDriverWait(self.driver, timeout)
+        return wait.until(EC.presence_of_element_located(locator))
+
+    @allure.step("Дождаться исчезновения элемента")
+    def wait_for_invisibility(self, locator, timeout=10):
+        """Дождаться исчезновения элемента"""
+        wait = WebDriverWait(self.driver, timeout)
+        return wait.until(EC.invisibility_of_element_located(locator))
+
     @allure.step("Проверить видимость элемента")
     def is_element_visible(self, locator):
         """Проверить видим ли элемент"""
